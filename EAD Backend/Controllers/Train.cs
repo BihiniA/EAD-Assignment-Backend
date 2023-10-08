@@ -80,8 +80,8 @@ namespace EAD_Backend.Controllers
             // }
 
             // Update the train properties that you want to allow users to modify
-            existingTrain._id = train._id; // Replace Property1 with the actual property name
-            existingTrain.Status = train.Status; // Replace Property2 with the actual property name
+            existingTrain.Status = train.Status; // Update Status
+            existingTrain.SeatCount = train.SeatCount; // Update SeatCount
 
             await _trainService.UpdateTrain(id, existingTrain);
             return Ok(new { success = true, data = existingTrain, msg = "Train updated successfully" });

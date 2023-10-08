@@ -25,6 +25,9 @@ public class Train  //Train class
     [JsonPropertyName("scheduleId")]
     public List<string>? ScheduleId { get; set; } // Change the data type to List<string> and use nullable List<string>
 
+    [JsonPropertyName("seatCount")] // New property "seatCount"
+    public int SeatCount { get; set; }
+
     // Add a constructor to initialize the ScheduleId property as null
     public Train()
     {

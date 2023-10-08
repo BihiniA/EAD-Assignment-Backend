@@ -27,7 +27,7 @@ public class UserService
 
     public async Task<Users> CreateAsync(Users user) //create user
     {
-     
+
         try
         {
             await _UserCollection.InsertOneAsync(user);
@@ -37,7 +37,7 @@ public class UserService
         {
             throw;
         }
-       
+
     }
 
     public async Task<List<Users>> GetAsync() //get all users
@@ -49,9 +49,9 @@ public class UserService
         }
         catch (System.Exception)
         {
-            throw; 
+            throw;
         }
-   
+
     }
 
     public async Task AddToUsers(string id, string password) // change user password using docuemnt id
@@ -85,7 +85,7 @@ public class UserService
     }
 
     public async Task UpdateUser(string id, Users user) // update user
-    { 
+    {
         try
         {
             await _UserCollection.ReplaceOneAsync(x => x.nic == id, user);
@@ -99,12 +99,12 @@ public class UserService
 
     // public async Task<bool> UpdateUserStatus(string nic, string newStatus) // update user status only
     //{
-        // var filter = Builders<Users>.Filter.Eq(u => u.nic, nic);
-        // var update = Builders<Users>.Update.Set(u => u.Status, newStatus);
+    // var filter = Builders<Users>.Filter.Eq(u => u.nic, nic);
+    // var update = Builders<Users>.Update.Set(u => u.Status, newStatus);
 
-        // var result = await _UserCollection.UpdateOneAsync(filter, update);
+    // var result = await _UserCollection.UpdateOneAsync(filter, update);
 
-        // return result.ModifiedCount > 0;
+    // return result.ModifiedCount > 0;
     //}
 
     //user login check
