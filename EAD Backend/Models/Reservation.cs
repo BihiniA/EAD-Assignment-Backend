@@ -23,10 +23,10 @@ public class Reservation  //Reservation class
     public string nic { get; set; }
 
     [JsonPropertyName("createdAt")]
-    public BsonTimestamp CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     [JsonPropertyName("updatedAt")]
-    public BsonTimestamp UpdatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
     [JsonPropertyName("reservationDate")]
     public DateTime ReservationDate { get; set; }
@@ -34,7 +34,6 @@ public class Reservation  //Reservation class
     [JsonPropertyName("reserveCount")]
     [BsonRepresentation(BsonType.Int32)]
     [BsonElement("reserveCount")]
-    [Range(0, 4, ErrorMessage = "The 'reserveCount' field must be between 0 and 4.")]
     public int ReserveCount { get; set; } = 0; // Default value set to 0
 
     [JsonPropertyName("status")]

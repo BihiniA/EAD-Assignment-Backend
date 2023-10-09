@@ -17,8 +17,6 @@ public enum UserRole
 [BsonIgnoreExtraElements]
 public class Users  //user class with relevent fields
 {
-
-
     [BsonId]
     [JsonPropertyName("nic")]
     public string nic { get; set; }

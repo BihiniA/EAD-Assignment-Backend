@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using MongoDBExample.Models;
+using EAD_Backend.Dto;
 
 namespace EAD_Backend.Controllers
 {
@@ -33,9 +34,9 @@ namespace EAD_Backend.Controllers
         }
 
         [HttpPost("create")] // Create a new train schedule
-        public async Task<IActionResult> Create([FromBody] TrainSchedule trainSchedule)
+        public async Task<IActionResult> Create([FromBody] CreateTrainScheduleDto createTrainScheduleDto)
         {
-            var createdTrainSchedule = await _trainScheduleService.CreateAsync(trainSchedule);
+            var createdTrainSchedule = await _trainScheduleService.CreateAsync(createTrainScheduleDto);
 
             if (createdTrainSchedule == null)
             {

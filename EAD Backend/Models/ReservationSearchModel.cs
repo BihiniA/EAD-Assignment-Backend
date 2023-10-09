@@ -8,6 +8,5 @@ namespace EAD_Backend.Models
         public string nic { get; set; }
         public DateTime? ReservationDate { get; set; }
         public int? ReserveCount { get; set; }
-        public StatusEnum? Status { get; set; }
     }
 }

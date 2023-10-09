@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MongoDBExample.Models;
 using Microsoft.AspNetCore;
+using EAD_Backend.JWTAuthentication;
 
 namespace EAD_Backend
 {
@@ -27,6 +28,7 @@ namespace EAD_Backend
             services.AddSingleton<TrainScheduleService>(); // Register the TrainScheduleService
             services.AddSingleton<ReservationService>(); // Register the ReservationService
             services.AddSingleton<TicketService>(); // Register the TicketService
+            services.AddSingleton<ITokenService, JwtAuthenticationService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -46,6 +48,7 @@ namespace EAD_Backend
             }
 
             app.UseHttpsRedirection();
+            app.UseMiddleware<ValidateTokenMiddleware>();
 
             app.UseRouting();
 

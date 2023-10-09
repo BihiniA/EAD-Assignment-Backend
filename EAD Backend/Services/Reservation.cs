@@ -7,16 +7,24 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using EAD_Backend.Models;
+using EAD_Backend.NewFolder;
+using EAD_Backend.Dto;
+using System.Diagnostics;
+using System.Text.Json;
+using System.Xml.Linq;
 
 public class ReservationService
 {
     private readonly IMongoCollection<Reservation> _reservationCollection;
+    private readonly TrainScheduleService _trainScheduleService;
 
-    public ReservationService(IOptions<MongoDBSettings> mongoDBSettings)
+
+    public ReservationService(IOptions<MongoDBSettings> mongoDBSettings, TrainScheduleService trainScheduleService)
     {
         MongoClient client = new MongoClient(mongoDBSettings.Value.ConnectionString);
         IMongoDatabase database = client.GetDatabase(mongoDBSettings.Value.DatabaseName);
         _reservationCollection = database.GetCollection<Reservation>("reservations");
+        _trainScheduleService = trainScheduleService;
     }
 
     public async Task<List<Reservation>> GetAllAsync()
@@ -61,11 +69,46 @@ public class ReservationService
         }
     }
 
-    public async Task<Reservation> CreateAsync(Reservation reservation)
+    public async Task<CreateReservationDto> CreateAsync(CreateReservationDto reservation)
     {
         try
         {
-            await _reservationCollection.InsertOneAsync(reservation);
+            if (reservation.ReserveCount > 4 || reservation.ReserveCount > 1) {
+                throw new InvalidOperationException("one user can only reserve 0-4 seats");
+            }
+
+            Reservation res = new Reservation
+            {
+                nic = reservation.nic,
+                ReservationDate = reservation.ReservationDate,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.UtcNow,
+                Status = StatusEnum.ACTIVE,
+                ReserveCount = reservation.ReserveCount,
+                TrainScheduleid = reservation.TrainScheduleId
+            };
+            
+
+            string id = reservation.TrainScheduleId.ToString();
+
+            var trainSchedule = await _trainScheduleService.GetByIdAsync(id);
+
+            if (trainSchedule.AvailableSeatCount < reservation.ReserveCount)
+            {
+                throw new InvalidOperationException("Requested seat count is not available");
+            }
+
+            var updatedSeatCount = trainSchedule.AvailableSeatCount - reservation.ReserveCount;
+
+            UpdateTrainScheduleSeatCountDto updateTrainScheduleSeatCountDto = new UpdateTrainScheduleSeatCountDto
+            {
+                seatCount = updatedSeatCount
+            };
+
+            // Wait until the UpdateTrainScheduleTicketCount method completes before returning the reservation object.
+            await _trainScheduleService.UpdateTrainScheduleSeatCount(id, updateTrainScheduleSeatCountDto);
+
+            await _reservationCollection.InsertOneAsync(res);
             return reservation;
         }
         catch (Exception)
@@ -99,46 +142,46 @@ public class ReservationService
         }
     }
 
-    public async Task<List<Reservation>> SearchAsync(ReservationSearchModel searchModel)
-    {
-        try
-        {
-            var filterBuilder = Builders<Reservation>.Filter;
-            var filter = filterBuilder.Empty; // Initialize an empty filter
+    //public async Task<List<Reservation>> SearchAsync(ReservationSearchModel searchModel)
+    //{
+    //    try
+    //    {
+    //        var filterBuilder = Builders<Reservation>.Filter;
+    //        var filter = filterBuilder.Empty; // Initialize an empty filter
 
-            if (!string.IsNullOrEmpty(searchModel.TrainScheduleid))
-            {
-                filter &= filterBuilder.Eq(r => r.TrainScheduleid, searchModel.TrainScheduleid);
-            }
+    //        if (!string.IsNullOrEmpty(searchModel.TrainScheduleid))
+    //        {
+    //            filter &= filterBuilder.Eq(r => r.TrainScheduleid, searchModel.TrainScheduleid);
+    //        }
 
-            if (!string.IsNullOrEmpty(searchModel.nic))
-            {
-                filter &= filterBuilder.Eq(r => r.nic, searchModel.nic);
-            }
+    //        if (!string.IsNullOrEmpty(searchModel.nic))
+    //        {
+    //            filter &= filterBuilder.Eq(r => r.nic, searchModel.nic);
+    //        }
 
-            if (searchModel.ReservationDate.HasValue)
-            {
-                filter &= filterBuilder.Eq(r => r.ReservationDate, searchModel.ReservationDate);
-            }
+    //        if (searchModel.ReservationDate.HasValue)
+    //        {
+    //            filter &= filterBuilder.Eq(r => r.ReservationDate, searchModel.ReservationDate);
+    //        }
 
-            if (searchModel.ReserveCount.HasValue)
-            {
-                filter &= filterBuilder.Eq(r => r.ReserveCount, searchModel.ReserveCount);
-            }
+    //        if (searchModel.ReserveCount.HasValue)
+    //        {
+    //            filter &= filterBuilder.Eq(r => r.ReserveCount, searchModel.ReserveCount);
+    //        }
 
-            if (searchModel.Status.HasValue)
-            {
-                filter &= filterBuilder.Eq(r => r.Status, searchModel.Status);
-            }
+    //        if (searchModel.Status.HasValue)
+    //        {
+    //            filter &= filterBuilder.Eq(r => r.Status, searchModel.Status);
+    //        }
 
-            var reservations = await _reservationCollection.FindAsync(filter);
-            return await reservations.ToListAsync();
-        }
-        catch (Exception)
-        {
-            // Handle or log the exception here
-            throw;
-        }
-    }
+    //        var reservations = await _reservationCollection.FindAsync(filter);
+    //        return await reservations.ToListAsync();
+    //    }
+    //    catch (Exception)
+    //    {
+    //        // Handle or log the exception here
+    //        throw;
+    //    }
+    //}
 
 }

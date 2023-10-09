@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using MongoDBExample.Models;
+using EAD_Backend.JWTAuthentication;
 
 namespace EAD_Backend.Controllers
 {
@@ -11,12 +12,13 @@ namespace EAD_Backend.Controllers
 
     public class UserController : Controller
     {
-
         private readonly UserService _userService;
+        private readonly JSONWebTokenService _jSONWebTokenService;
 
-        public UserController(UserService userService)
+        public UserController(UserService userService, JSONWebTokenService jSONWebTokenService)
         {
             _userService = userService;
+            _jSONWebTokenService = jSONWebTokenService;
         }
 
         [HttpGet] // get all user endpoint
@@ -83,7 +85,7 @@ namespace EAD_Backend.Controllers
             {
                 return NotFound(new { success = false, data = user, token = "", msg = "record not found" });
             }
-            var token = _userService.GenerateJSONWebToken(user);
+            var token = _jSONWebTokenService.GenerateJSONWebToken(user);
             return Ok(new { success = true, data = user, token = token, msg = "success" });
         }
 

@@ -16,8 +16,8 @@ public class TrainSchedule  //Train class
     [JsonPropertyName("_id")]
     public string _id { get; set; }
 
-    [JsonPropertyName("train_id")]
-    public string TrainId { get; set; } = null!;
+    [JsonPropertyName("trainId")]
+    public string TrainId { get; set; } 
 
     [JsonPropertyName("departure")]
     public string Departure { get; set; }
@@ -31,19 +31,12 @@ public class TrainSchedule  //Train class
     [JsonPropertyName("endTime")]
     public DateTime EndTime { get; set; }
 
+    [JsonPropertyName("availableSeatCount")]
+    public int AvailableSeatCount { get; set; }
+
     [JsonPropertyName("status")]
     [BsonRepresentation(BsonType.String)]
     [BsonElement("status")]
     [EnumDataType(typeof(StatusEnum))]
     public StatusEnum Status { get; set; } = StatusEnum.ACTIVE; // Default value set to "ACTIVE"
-
-    //[JsonPropertyName("train")]
-    //[BsonIgnore]
-    //public Train Train { get; set; } // Property to store the associated Train
-
-    // Add a constructor to initialize Train property as null
-    // public TrainSchedule()
-    //{
-        //Train = null;
-    //}
 }

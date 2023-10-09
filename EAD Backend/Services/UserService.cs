@@ -10,10 +10,17 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System;
+using EAD_Backend.JWTAuthentication;
 
 public class UserService
 {
     private readonly IMongoCollection<Users> _UserCollection;
+    private readonly JwtAuthenticationService _jwtAuthenticationService;
+
+    public UserService(JwtAuthenticationService jwtAuthenticationService)
+    {
+        _jwtAuthenticationService = jwtAuthenticationService;
+    }
 
 
     public UserService(IOptions<MongoDBSettings> mongoDBSettings)
@@ -99,34 +106,26 @@ public class UserService
 
     // public async Task<bool> UpdateUserStatus(string nic, string newStatus) // update user status only
     //{
-        // var filter = Builders<Users>.Filter.Eq(u => u.nic, nic);
-        // var update = Builders<Users>.Update.Set(u => u.Status, newStatus);
+    // var filter = Builders<Users>.Filter.Eq(u => u.nic, nic);
+    // var update = Builders<Users>.Update.Set(u => u.Status, newStatus);
 
-        // var result = await _UserCollection.UpdateOneAsync(filter, update);
+    // var result = await _UserCollection.UpdateOneAsync(filter, update);
 
-        // return result.ModifiedCount > 0;
+    // return result.ModifiedCount > 0;
     //}
 
     //user login check
 
-    public async Task<Users> Login(string email, string password) //login validation using email and password
+    public async Task<string> Login(string email, string password)
     {
-        try
+        var user = await GetUserByEmail(email);
+
+        if (user == null || user.password != password)
         {
-            var user = await _UserCollection.Find(x => x.email == email && x.password == password).FirstOrDefaultAsync();
-            if (user != null)
-            {
-                return user;
-            }
-            else
-            {
-                return user;
-            }
+            throw new Exception("Invalid username or password");
         }
-        catch (System.Exception)
-        {
-            throw;
-        }
+
+        return _jwtAuthenticationService.GenerateJSONWebToken(user);
     }
 
     public string GenerateJSONWebToken(Users users) // token generation 
@@ -153,6 +152,26 @@ public class UserService
         {
             var user = await _UserCollection.Find(x => x.nic
             == id).FirstOrDefaultAsync();
+            if (user != null)
+            {
+                return user;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<Users> GetUserByEmail(string email) // get user by email
+    {
+        try
+        {
+            var user = await _UserCollection.Find(x => x.email == email).FirstOrDefaultAsync();
             if (user != null)
             {
                 return user;
