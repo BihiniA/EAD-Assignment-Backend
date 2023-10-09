@@ -38,10 +38,6 @@ public class Train  //Train class
     public int SeatCount { get; set; }
 
 
-
-    [JsonPropertyName("seatCount")] // New property "seatCount"
-    public int SeatCount { get; set; }
-
     // Add a constructor to initialize the ScheduleId property as null
     public Train()
     {

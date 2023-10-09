@@ -73,7 +73,7 @@ public class ReservationService
     {
         try
         {
-            if (reservation.ReserveCount > 4 || reservation.ReserveCount > 1) {
+            if ( reservation.ReserveCount > 4) {
                 throw new InvalidOperationException("one user can only reserve 0-4 seats");
             }
 

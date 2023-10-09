@@ -13,13 +13,13 @@ namespace EAD_Backend.Controllers
     public class UserController : Controller
     {
         private readonly UserService _userService;
-        private readonly JSONWebTokenService _jSONWebTokenService;
+        //private readonly JSONWebTokenService _jSONWebTokenService;
 
-        public UserController(UserService userService, JSONWebTokenService jSONWebTokenService)
-        {
-            _userService = userService;
-            _jSONWebTokenService = jSONWebTokenService;
-        }
+        //public UserController(UserService userService, JSONWebTokenService jSONWebTokenService)
+        //{
+        //    _userService = userService;
+        //    _jSONWebTokenService = jSONWebTokenService;
+        //}
 
         [HttpGet] // get all user endpoint
         public async Task<IActionResult> Get()
@@ -85,7 +85,7 @@ namespace EAD_Backend.Controllers
             {
                 return NotFound(new { success = false, data = user, token = "", msg = "record not found" });
             }
-            var token = _jSONWebTokenService.GenerateJSONWebToken(user);
+            var token = "";
             return Ok(new { success = true, data = user, token = token, msg = "success" });
         }
 

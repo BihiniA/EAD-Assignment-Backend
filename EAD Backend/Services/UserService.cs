@@ -15,12 +15,12 @@ using EAD_Backend.JWTAuthentication;
 public class UserService
 {
     private readonly IMongoCollection<Users> _UserCollection;
-    private readonly JwtAuthenticationService _jwtAuthenticationService;
+    //private readonly JwtAuthenticationService _jwtAuthenticationService;
 
-    public UserService(JwtAuthenticationService jwtAuthenticationService)
-    {
-        _jwtAuthenticationService = jwtAuthenticationService;
-    }
+    //public UserService(JwtAuthenticationService jwtAuthenticationService)
+    //{
+    //    _jwtAuthenticationService = jwtAuthenticationService;
+    //}
 
 
     public UserService(IOptions<MongoDBSettings> mongoDBSettings)
@@ -125,7 +125,7 @@ public class UserService
             throw new Exception("Invalid username or password");
         }
 
-        return _jwtAuthenticationService.GenerateJSONWebToken(user);
+        return GenerateJSONWebToken(user);
     }
 
     public string GenerateJSONWebToken(Users users) // token generation 
