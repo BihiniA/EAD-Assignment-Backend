@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System;
 using EAD_Backend.JWTAuthentication;
+using EAD_Backend.Dto;
 
 public class UserService
 {
@@ -119,8 +120,10 @@ public class UserService
     public async Task<string> Login(string email, string password)
     {
         var user = await GetUserByEmail(email);
+        var userPassword = EncodePasswordToBase64(password);
+        var pass = DecodeFrom64(user.password);
 
-        if (user == null || user.password != password)
+        if (user == null || userPassword != pass)
         {
             throw new Exception("Invalid username or password");
         }
@@ -187,8 +190,60 @@ public class UserService
         }
     }
 
+    public static string EncodePasswordToBase64(string password)
+    {
+        try
+        {
+            byte[] encData_byte = new byte[password.Length];
+            encData_byte = System.Text.Encoding.UTF8.GetBytes(password);
+            string encodedData = Convert.ToBase64String(encData_byte);
+            return encodedData;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error in base64Encode" + ex.Message);
+        }
+    }
+    //this function Convert to Decord your Password
+    public string DecodeFrom64(string encodedData)
+    {
+        System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
+        System.Text.Decoder utf8Decode = encoder.GetDecoder();
+        byte[] todecode_byte = Convert.FromBase64String(encodedData);
+        int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
+        char[] decoded_char = new char[charCount];
+        utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
+        string result = new String(decoded_char);
+        return result;
+    }
+
     internal Task<bool> UpdateUserStatus(string id, object status)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<UserRegisterDto> Register(UserRegisterDto userRegisterDto)
+    {
+        var user = GetUserByEmail(userRegisterDto.email);
+
+        if(user != null)
+        {
+            throw new Exception("User already registered");
+        }
+
+        var password = EncodePasswordToBase64(userRegisterDto.password);
+
+        Users userObj = new Users { 
+            email = userRegisterDto.email,
+            password = userRegisterDto.password,
+            name = userRegisterDto.name,
+            nic = userRegisterDto.nic,
+            Role = userRegisterDto.Role,
+            Status = EAD_Backend.Models.StatusEnum.ACTIVE
+        };
+
+        await _UserCollection.InsertOneAsync(userObj);
+        return userRegisterDto;
+
     }
 }

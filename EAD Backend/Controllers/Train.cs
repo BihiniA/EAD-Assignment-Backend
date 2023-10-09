@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using MongoDBExample.Models;
+using EAD_Backend.Models;
 
 namespace EAD_Backend.Controllers
 {
@@ -33,10 +34,14 @@ namespace EAD_Backend.Controllers
         [HttpPost] // create train endpoint
         public async Task<IActionResult> Post([FromBody] Train train)
         {
-            if (train.ScheduleId == null)
+            var existingTrain = await _trainService.GetByName(train.TrainName);
+            if(existingTrain != null)
             {
-                train.ScheduleId = new List<string>(); // Initialize ScheduleId as an empty list if it's null
+                throw new Exception("Train already exist");
             }
+
+            train.ScheduleId = new List<string>();
+            train.Status = StatusEnum.ACTIVE;
 
             var createdTrain = await _trainService.CreateAsync(train);
 
@@ -88,7 +93,7 @@ namespace EAD_Backend.Controllers
         }
 
         [HttpPatch("status/update/{id}")] // Update status for a train (restricted to USER)
-        public async Task<IActionResult> UpdateStatus(string id, [FromBody] string status)
+        public async Task<IActionResult> UpdateStatus(string id, [FromBody] StatusEnum status)
         {
             var existingTrain = await _trainService.GetByIdAsync(id);
 
@@ -96,14 +101,6 @@ namespace EAD_Backend.Controllers
             {
                 return NotFound(new { success = false, msg = "Train not found" });
             }
-
-            // Check if user is authorized to perform this operation (e.g., based on user role)
-            // If not authorized, return a 403 Forbidden response
-            // Example authorization logic:
-            // if (!User.IsInRole("USER"))
-            // {
-            //     return Forbid();
-            // }
 
             existingTrain.Status = status;
 

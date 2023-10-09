@@ -31,6 +31,9 @@ public class TrainSchedule  //Train class
     [JsonPropertyName("endTime")]
     public DateTime EndTime { get; set; }
 
+    [JsonPropertyName("scheduleDate")]
+    public DateTime ScheduleDate { get; set; }
+
     [JsonPropertyName("availableSeatCount")]
     public int AvailableSeatCount { get; set; }
 

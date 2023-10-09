@@ -83,18 +83,5 @@ namespace EAD_Backend.Controllers
             return Ok(new { success = true, data = updatedReservation, msg = "Success" });
         }
 
-        //[HttpGet("search")]
-        //public async Task<IActionResult> Search([FromQuery] ReservationSearchModel searchModel)
-        //{
-        //    var reservations = await _reservationService.SearchAsync(searchModel);
-
-        //    if (reservations == null || reservations.Count == 0)
-        //    {
-        //        return NotFound(new { success = false, data = reservations, msg = "No matching records found" });
-        //    }
-
-        //    return Ok(new { success = true, data = reservations, msg = "Success" });
-        //}
-
     }
 }
