@@ -26,25 +26,25 @@ namespace EAD_Backend.Controllers
         {
             var users = await _userService.GetAsync();
 
-            if(users == null)
+            if (users == null)
             {
                 return NotFound(new { success = false, data = users, msg = "record not found" });
 
             }
 
-            return Ok(new { success = true, data = users,  msg = "success" });
+            return Ok(new { success = true, data = users, msg = "success" });
 
         }
 
         [HttpPost] //craete user endpoint
         public async Task<IActionResult> Post([FromBody] Users users)
         {
-           var user = await _userService.CreateAsync(users);
+            var user = await _userService.CreateAsync(users);
             if (user == null)
             {
                 return BadRequest(new { success = false, data = user, msg = "record not found" });
             }
-            
+
             return Ok(new { success = true, data = user, msg = "success" });
         }
 
@@ -58,11 +58,11 @@ namespace EAD_Backend.Controllers
         // [HttpPut("updatestatus/{id}")] // Update user status only
         // public async Task<IActionResult> UpdateStatus(string id, [FromBody] StatusUpdateRequest statusUpdate)
         // {
-            // var success = await _userService.UpdateUserStatus(id, statusUpdate.status);
+        // var success = await _userService.UpdateUserStatus(id, statusUpdate.status);
 
-            // if (!success)
-            // {
-                 //return NotFound(new { success = false, msg = "User not found" });
+        // if (!success)
+        // {
+        //return NotFound(new { success = false, msg = "User not found" });
         //    }
 
         //    return Ok(new { success = true, msg = "Status updated successfully" });
@@ -78,7 +78,7 @@ namespace EAD_Backend.Controllers
 
         //login method
         [HttpPost("login")] //login validation and token generation
-        public async Task<IActionResult> Login( Login login)
+        public async Task<IActionResult> Login(Login login)
         {
             var user = await _userService.Login(login.email, login.password);
             if (user == null)
@@ -92,7 +92,7 @@ namespace EAD_Backend.Controllers
         [HttpGet("get/{id}")] // get single user
         public async Task<Users> GetUser(string id)
         {
-          var user =   await _userService.GetUser(id);
+            var user = await _userService.GetUser(id);
 
             return user;
         }
