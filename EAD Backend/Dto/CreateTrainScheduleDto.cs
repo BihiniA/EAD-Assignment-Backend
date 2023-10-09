@@ -19,5 +19,8 @@ namespace EAD_Backend.Dto
 
         [JsonPropertyName("endTime")]
         public DateTime EndTime { get; set; }
+
+        [JsonPropertyName("scheduleDate")]
+        public DateTime ScheduleDate { get; set; }
     }
 }

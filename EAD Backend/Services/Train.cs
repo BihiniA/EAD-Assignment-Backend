@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
+using EAD_Backend.Models;
 
 public class TrainService
 {
@@ -78,7 +79,7 @@ public class TrainService
         }
     }
 
-    public async Task UpdateStatus(string id, string status)
+    public async Task UpdateStatus(string id, StatusEnum status)
     {
         try
         {
@@ -101,6 +102,19 @@ public class TrainService
         services.AddSingleton<TrainService>();
 
         // ... other service registrations ...
+    }
+
+    public async Task<Train> GetByName(string name)
+    {
+        try
+        {
+            return await _trainCollection.Find(train => train.TrainName == name).FirstOrDefaultAsync();
+        }
+        catch (Exception)
+        {
+            // Handle the exception, log it, or throw a custom exception if needed.
+            throw;
+        }
     }
 
 }

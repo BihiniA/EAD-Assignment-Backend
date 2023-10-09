@@ -22,15 +22,16 @@ public class Train  //Train class
 
 
     [JsonPropertyName("status")]
-    [BsonRepresentation(BsonType.String)]
-    [BsonElement("status")]
-    [RegularExpression("^(ACTIVE|ARCHIVE)$", ErrorMessage = "Valid values for 'status' are 'ACTIVE,' 'ARCHIVE,'")]
-    public string Status { get; set; } = "ACTIVE"; // Default value set to "ACTIVE"
+    public StatusEnum Status { get; set; } // Default value set to "ACTIVE"
 
 
 
     [JsonPropertyName("scheduleId")]
     public List<string> ScheduleId { get; set; } // Change the data type to List<string> and use nullable List<string>
+
+    
+    [JsonPropertyName("trainName")]
+    public string TrainName { get; set; }
 
 
 

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using MongoDBExample.Models;
 using EAD_Backend.JWTAuthentication;
+using EAD_Backend.Dto;
 
 namespace EAD_Backend.Controllers
 {
@@ -81,6 +82,19 @@ namespace EAD_Backend.Controllers
         public async Task<IActionResult> Login(Login login)
         {
             var user = await _userService.Login(login.email, login.password);
+            if (user == null)
+            {
+                return NotFound(new { success = false, data = user, token = "", msg = "record not found" });
+            }
+            var token = "";
+            return Ok(new { success = true, data = user, token = token, msg = "success" });
+        }
+
+        //register method
+        [HttpPost("register")] 
+        public async Task<IActionResult> Register(UserRegisterDto register)
+        {
+            var user = await _userService.Register(register);
             if (user == null)
             {
                 return NotFound(new { success = false, data = user, token = "", msg = "record not found" });
