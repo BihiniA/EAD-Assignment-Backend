@@ -72,6 +72,19 @@ namespace EAD_Backend.Controllers
 
             return Ok(new { success = true, msg = "Train schedule deleted successfully" });
         }
+
+        [HttpGet("getById/{id}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var train = await _trainScheduleService.GetByIdAsync(id);
+
+            if (train == null)
+            {
+                return NotFound(new { success = false, data = train, msg = "Record not found" });
+            }
+
+            return Ok(new { success = true, data = train, msg = "Success" });
+        }
     }
 }
 

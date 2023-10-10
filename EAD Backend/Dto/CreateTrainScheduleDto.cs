@@ -15,10 +15,10 @@ namespace EAD_Backend.Dto
         public string Destination { get; set; }
 
         [JsonPropertyName("startTime")]
-        public String StartTime { get; set; }
+        public string StartTime { get; set; }
 
         [JsonPropertyName("endTime")]
-        public String EndTime { get; set; }
+        public string EndTime { get; set; }
 
         [JsonPropertyName("scheduleDate")]
         public DateTime ScheduleDate { get; set; }
