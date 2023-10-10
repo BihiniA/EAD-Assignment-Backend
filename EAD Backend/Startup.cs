@@ -35,6 +35,18 @@ namespace EAD_Backend
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EADBackend", Version = "v1" });
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder
+                        .WithOrigins("http://localhost:3000") // Add your frontend URL here
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials(); // Allow credentials (cookies, headers) to be sent cross-origin if needed
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +63,13 @@ namespace EAD_Backend
             //app.UseMiddleware<ValidateTokenMiddleware>();
 
             app.UseRouting();
+            app.UseCors("CorsPolicy");
+
+            //app.Use(async (context, next) =>
+            //{
+            //    context.Response.Headers.Add("X-Developed-By", "Your Name");
+            //    await next.Invoke();
+            //});
 
             app.UseAuthorization();
 
