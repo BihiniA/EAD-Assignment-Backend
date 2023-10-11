@@ -50,6 +50,7 @@ public class TrainScheduleService
             trainSchedule.Status = StatusEnum.ACTIVE;
             trainSchedule.AvailableSeatCount = trainObj.SeatCount;
             trainSchedule.TrainId = createTrainScheduleDto.TrainId;
+            trainSchedule.ScheduleDate = createTrainScheduleDto.ScheduleDate;
 
             await _trainScheduleCollection.InsertOneAsync(trainSchedule);
             return trainSchedule;

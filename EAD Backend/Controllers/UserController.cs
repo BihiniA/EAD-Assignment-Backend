@@ -14,13 +14,11 @@ namespace EAD_Backend.Controllers
     public class UserController : Controller
     {
         private readonly UserService _userService;
-        //private readonly JSONWebTokenService _jSONWebTokenService;
 
-        //public UserController(UserService userService, JSONWebTokenService jSONWebTokenService)
-        //{
-        //    _userService = userService;
-        //    _jSONWebTokenService = jSONWebTokenService;
-        //}
+        public UserController(UserService userService)
+        {
+            _userService = userService;
+        }
 
         [HttpGet] // get all user endpoint
         public async Task<IActionResult> Get()
@@ -38,7 +36,7 @@ namespace EAD_Backend.Controllers
         }
 
         [HttpPost] //craete user endpoint
-        public async Task<IActionResult> Post([FromBody] Users users)
+        public async Task<IActionResult> Post([FromBody] CreateUserDto users)
         {
             var user = await _userService.CreateAsync(users);
             if (user == null)

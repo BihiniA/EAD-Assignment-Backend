@@ -33,13 +33,24 @@ public class UserService
 
 
 
-    public async Task<Users> CreateAsync(Users user) //create user
+    public async Task<Users> CreateAsync(CreateUserDto user) //create user
     {
-
         try
         {
-            await _UserCollection.InsertOneAsync(user);
-            return user;
+            var pass = EncodePasswordToBase64(user.password);
+
+            Users userObj = new Users
+            {
+                email = user.email,
+                password = pass,
+                name = user.name,
+                nic = user.nic,
+                Role = UserRole.User,
+                Status = EAD_Backend.Models.StatusEnum.ACTIVE
+            };
+
+            await _UserCollection.InsertOneAsync(userObj);
+            return userObj;
         }
         catch (System.Exception)
         {
@@ -235,7 +246,7 @@ public class UserService
 
         Users userObj = new Users { 
             email = userRegisterDto.email,
-            password = userRegisterDto.password,
+            password = password,
             name = userRegisterDto.name,
             nic = userRegisterDto.nic,
             Role = userRegisterDto.Role,
