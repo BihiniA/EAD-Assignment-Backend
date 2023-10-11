@@ -27,10 +27,7 @@ public class Users  //user class with relevent fields
     [JsonPropertyName("email")]
     public string email { get; set; } = null!;
 
-    [JsonPropertyName("role")]
-    [BsonRepresentation(BsonType.String)]
-    [BsonElement("role")]
-    public UserRole Role { get; set; } = UserRole.User; // Default value set to "User"
+    public UserRole Role { get; set; } 
 
     [JsonPropertyName("password")]
     public string password { get; set; } = null!;
