@@ -18,7 +18,7 @@ namespace EAD_Backend.NewFolder
         public string nic { get; set; }
 
         [JsonPropertyName("reservationDate")]
-        public DateTime ReservationDate { get; set; }
+        public string ReservationDate { get; set; }
 
         [JsonPropertyName("reserveCount")]
         public int ReserveCount { get; set; }

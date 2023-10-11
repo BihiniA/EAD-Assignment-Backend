@@ -235,7 +235,7 @@ public class UserService
 
     public async Task<UserRegisterDto> Register(UserRegisterDto userRegisterDto)
     {
-        var user = GetUserByEmail(userRegisterDto.email);
+        var user = await GetUserByEmail(userRegisterDto.email);
 
         if(user != null)
         {
