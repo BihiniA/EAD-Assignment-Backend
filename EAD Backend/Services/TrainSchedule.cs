@@ -38,17 +38,20 @@ public class TrainScheduleService
     {
         try
         {
-            string trainId = createTrainScheduleDto.TrainId.ToString();
+            string trainId = createTrainScheduleDto.TrainId;
             var trainObj = await _trainService.GetByIdAsync(trainId);
 
             TrainSchedule trainSchedule = new TrainSchedule();
+            if (trainObj != null){
+                trainSchedule.AvailableSeatCount = trainObj.SeatCount;
+            };
 
             trainSchedule.StartTime = createTrainScheduleDto.StartTime;
             trainSchedule.EndTime = createTrainScheduleDto.EndTime;
             trainSchedule.Destination = createTrainScheduleDto.Destination;
             trainSchedule.Departure = createTrainScheduleDto.Departure;
             trainSchedule.Status = StatusEnum.ACTIVE;
-            trainSchedule.AvailableSeatCount = trainObj.SeatCount;
+            
             trainSchedule.TrainId = createTrainScheduleDto.TrainId;
             trainSchedule.ScheduleDate = createTrainScheduleDto.ScheduleDate;
 
