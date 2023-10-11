@@ -81,8 +81,8 @@ public class ReservationService
             {
                 nic = reservation.nic,
                 ReservationDate = reservation.ReservationDate,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now.ToString(),
+                UpdatedAt = DateTime.UtcNow.ToString(),
                 Status = StatusEnum.ACTIVE,
                 ReserveCount = reservation.ReserveCount,
                 TrainScheduleid = reservation.TrainScheduleId

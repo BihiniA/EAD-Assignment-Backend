@@ -23,22 +23,18 @@ public class Reservation  //Reservation class
     public string nic { get; set; }
 
     [JsonPropertyName("createdAt")]
-    public DateTime CreatedAt { get; set; }
+    public string CreatedAt { get; set; }
 
     [JsonPropertyName("updatedAt")]
-    public DateTime UpdatedAt { get; set; }
+    public string UpdatedAt { get; set; }
 
     [JsonPropertyName("reservationDate")]
-    public DateTime ReservationDate { get; set; }
+    public string ReservationDate { get; set; }
 
     [JsonPropertyName("reserveCount")]
-    [BsonRepresentation(BsonType.Int32)]
-    [BsonElement("reserveCount")]
     public int ReserveCount { get; set; } = 0; // Default value set to 0
 
     [JsonPropertyName("status")]
-    [BsonRepresentation(BsonType.String)]
-    [BsonElement("status")]
     [EnumDataType(typeof(StatusEnum))]
     public StatusEnum Status { get; set; } = StatusEnum.ACTIVE; // Default value set to "ACTIVE"
 
