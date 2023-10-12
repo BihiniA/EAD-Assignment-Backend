@@ -83,5 +83,19 @@ namespace EAD_Backend.Controllers
             return Ok(new { success = true, data = updatedReservation, msg = "Success" });
         }
 
+
+        [HttpDelete("delete/{id}")] // Delete a train schedule
+        public async Task<IActionResult> DeleteById(string id)
+        {
+            var deleted = await _reservationService.DeleteById(id);
+
+            if (!deleted)
+            {
+                return NotFound(new { success = false, msg = "Reservation not found" });
+            }
+
+            return Ok(new { success = true, msg = "Reservation deleted successfully" });
+        }
+
     }
 }

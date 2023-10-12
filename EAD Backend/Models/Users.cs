@@ -33,8 +33,6 @@ public class Users  //user class with relevent fields
     public string password { get; set; } = null!;
 
     [JsonPropertyName("status")]
-    [BsonRepresentation(BsonType.String)]
-    [BsonElement("status")]
     [EnumDataType(typeof(StatusEnum))]
     public StatusEnum Status { get; set; } = StatusEnum.ACTIVE; // Default value set to "ACTIVE"
 }

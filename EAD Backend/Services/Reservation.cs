@@ -196,6 +196,21 @@ public class ReservationService
         }
     }
 
+
+    public async Task<bool> DeleteById(string id)
+    {
+        try
+        {
+            var result = await _reservationCollection.DeleteOneAsync(t => t._id == id);
+            return result.DeletedCount > 0;
+        }
+        catch (Exception)
+        {
+            // Handle or log the exception here
+            throw;
+        }
+    }
+
     //public async Task<List<Reservation>> SearchAsync(ReservationSearchModel searchModel)
     //{
     //    try
