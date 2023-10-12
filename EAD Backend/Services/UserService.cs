@@ -12,6 +12,8 @@ using System.Security.Claims;
 using System;
 using EAD_Backend.JWTAuthentication;
 using EAD_Backend.Dto;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 public class UserService
 {
@@ -128,19 +130,27 @@ public class UserService
 
     //user login check
 
-    public async Task<string> Login(string email, string password)
+    public async Task<IActionResult> Login(string email, string password)
     {
         var user = await GetUserByEmail(email);
-        var userPassword = EncodePasswordToBase64(password);
-        var pass = DecodeFrom64(user.password);
 
-        if (user == null || userPassword != pass)
+        if (user != null)
         {
-            throw new Exception("Invalid username or password");
+            var userPassword = EncodePasswordToBase64(password);
+            var storedPassword = DecodeFrom64(user.password);
+
+            if (userPassword != storedPassword)
+            {
+                var token = GenerateJSONWebToken(user);
+                return new ObjectResult(new { success = true, data = user, token = token, msg = "Success" }) { StatusCode = StatusCodes.Status401Unauthorized };
+            }
         }
 
-        return GenerateJSONWebToken(user);
+        
+        
+        return new ObjectResult(new { success = false, data = user, token = "", msg = "Invalid username or password" });
     }
+
 
     public string GenerateJSONWebToken(Users users) // token generation 
     {
