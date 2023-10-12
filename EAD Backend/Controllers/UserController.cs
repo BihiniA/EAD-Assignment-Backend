@@ -84,8 +84,7 @@ namespace EAD_Backend.Controllers
             {
                 return NotFound(new { success = false, data = user, token = "", msg = "record not found" });
             }
-            var token = "";
-            return Ok(new { success = true, data = user, token = token, msg = "success" });
+            return Ok(user);
         }
 
         //register method
