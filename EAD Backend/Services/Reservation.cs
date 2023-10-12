@@ -27,12 +27,39 @@ public class ReservationService
         _trainScheduleService = trainScheduleService;
     }
 
-    public async Task<List<Reservation>> GetAllAsync()
+    public async Task<List<ReservationsWithSchedule>> GetAllAsync()
     {
         try
         {
-            var reservations = await _reservationCollection.FindAsync(_ => true);
-            return await reservations.ToListAsync();
+            var reservations = await _reservationCollection.Find(_ => true).ToListAsync();
+
+            var reservationsWithSchedule = new List<ReservationsWithSchedule>();
+
+            foreach (var reservation in reservations)
+            {
+                var trainSchedule = await _trainScheduleService.GetByIdAsync(reservation.TrainScheduleid);
+
+                if (trainSchedule != null)
+                {
+                    var reservationWithSchedule = new ReservationsWithSchedule
+                    {
+                        _id = reservation._id,
+                        TrainScheduleid = reservation.TrainScheduleid,
+                        nic = reservation.nic,
+                        CreatedAt = reservation.CreatedAt,
+                        UpdatedAt = reservation.UpdatedAt,
+                        ReservationDate = reservation.ReservationDate,
+                        ReserveCount = reservation.ReserveCount,
+                        Departure = trainSchedule.Departure,
+                        Destination = trainSchedule.Destination,
+                        Status = reservation.Status
+                    };
+
+                    reservationsWithSchedule.Add(reservationWithSchedule);
+                }
+            }
+
+            return reservationsWithSchedule;
         }
         catch (Exception)
         {
@@ -41,12 +68,38 @@ public class ReservationService
         }
     }
 
-    public async Task<Reservation> GetByIdAsync(string id)
+
+
+
+    public async Task<ReservationsWithSchedule> GetByIdAsync(string id)
     {
         try
         {
-            var reservation = await _reservationCollection.FindAsync(r => r._id == id);
-            return await reservation.FirstOrDefaultAsync();
+            var reservation = await _reservationCollection.Find(r => r._id == id).FirstAsync();
+            var reservationsWithSchedule = new List<ReservationsWithSchedule>();
+
+            var trainSchedule = await _trainScheduleService.GetByIdAsync(reservation.TrainScheduleid);
+
+            if (trainSchedule != null)
+            {
+                var reservationWithSchedule = new ReservationsWithSchedule
+                {
+                    _id = reservation._id,
+                    TrainScheduleid = reservation.TrainScheduleid,
+                    nic = reservation.nic,
+                    CreatedAt = reservation.CreatedAt,
+                    UpdatedAt = reservation.UpdatedAt,
+                    ReservationDate = reservation.ReservationDate,
+                    ReserveCount = reservation.ReserveCount,
+                    Departure = trainSchedule.Departure,
+                    Destination = trainSchedule.Destination,
+                    Status = reservation.Status
+                };
+
+                reservationsWithSchedule.Add(reservationWithSchedule);
+            }
+
+            return reservationsWithSchedule[0];
         }
         catch (Exception)
         {
@@ -54,6 +107,7 @@ public class ReservationService
             throw;
         }
     }
+
 
     public async Task<List<Reservation>> GetByUserIdAsync(string userId)
     {
@@ -80,7 +134,7 @@ public class ReservationService
             Reservation res = new Reservation
             {
                 nic = reservation.nic,
-                ReservationDate = reservation.ReservationDate,
+                ReservationDate = reservation.ReservationDate.ToString(),
                 CreatedAt = DateTime.Now.ToString(),
                 UpdatedAt = DateTime.UtcNow.ToString(),
                 Status = StatusEnum.ACTIVE,
@@ -89,7 +143,7 @@ public class ReservationService
             };
             
 
-            string id = reservation.TrainScheduleId.ToString();
+            string id = reservation.TrainScheduleId;
 
             var trainSchedule = await _trainScheduleService.GetByIdAsync(id);
 
