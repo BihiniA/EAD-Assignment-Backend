@@ -117,4 +117,19 @@ public class TrainService
         }
     }
 
+    public async Task<bool> DeleteAsync(string id)
+    {
+        try
+        {
+            var result = await _trainCollection.DeleteOneAsync(t => t._id == id);
+            return result.DeletedCount > 0;
+        }
+        catch (Exception)
+        {
+            // Handle or log the exception here
+            throw;
+        }
+    }
+
+
 }
