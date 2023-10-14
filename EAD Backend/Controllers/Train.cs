@@ -107,5 +107,12 @@ namespace EAD_Backend.Controllers
             await _trainService.UpdateStatus(id, status);
             return Ok(new { success = true, data = existingTrain, msg = "Train status updated successfully" });
         }
+
+        [HttpDelete("{id}")] //delete user
+        public async Task<IActionResult> Delete(string id)
+        {
+            await _trainService.DeleteAsync(id);
+            return Ok();
+        }
     }
 }
