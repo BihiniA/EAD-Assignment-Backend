@@ -142,7 +142,7 @@ public class UserService
 
             if (user.password != null)
             {
-                userObj.password = EncodePasswordToBase64(user.password.ToString());
+                userObj.password = user.password;
             }else
             {
                 userObj.password = DecodeFrom64(existingUser.password);
@@ -181,7 +181,7 @@ public class UserService
     {
         var user = await GetUserByEmail(email);
 
-        if (user != null)
+        if (user != null && user.Status == 0 )
         {
             var userPassword = EncodePasswordToBase64(password);
             var storedPassword = DecodeFrom64(user.password);
