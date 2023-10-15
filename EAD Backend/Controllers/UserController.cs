@@ -47,8 +47,8 @@ namespace EAD_Backend.Controllers
             return Ok(new { success = true, data = user, msg = "success" });
         }
 
-        [HttpPut("updateuser/{id}")] //update user
-        public async Task<IActionResult> UpdateUser(string id, [FromBody] Users users)
+        [HttpPatch("updateuser/{id}")] //update user
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserDto users)
         {
             await _userService.UpdateUser(id, users);
             return Ok();
