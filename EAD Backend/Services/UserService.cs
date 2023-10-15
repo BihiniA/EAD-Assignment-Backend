@@ -14,6 +14,10 @@ using EAD_Backend.JWTAuthentication;
 using EAD_Backend.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using EAD_Backend.Models;
+using System.Diagnostics;
+using Microsoft.Extensions.Logging;
+using MongoDB.Bson.IO;
 
 public class UserService
 {
@@ -142,7 +146,7 @@ public class UserService
 
             if (user.password != null)
             {
-                userObj.password = user.password;
+                userObj.password = EncodePasswordToBase64(user.password);
             }else
             {
                 userObj.password = DecodeFrom64(existingUser.password);
@@ -153,7 +157,7 @@ public class UserService
             var update = Builders<Users>.Update.Set(x => x.Status, userObj.Status)
                                                .Set(x => x.email, userObj.email)
                                                .Set(x => x.name, userObj.name)
-                                               .Set(x => x.password, EncodePasswordToBase64(userObj.password));
+                                               .Set(x => x.password, userObj.password);
 
             await _UserCollection.UpdateOneAsync(filter, update);
             //await _UserCollection.ReplaceOneAsync(x => x.nic == id, userObj);
@@ -165,37 +169,30 @@ public class UserService
         }
     }
 
-    // public async Task<bool> UpdateUserStatus(string nic, string newStatus) // update user status only
-    //{
-    // var filter = Builders<Users>.Filter.Eq(u => u.nic, nic);
-    // var update = Builders<Users>.Update.Set(u => u.Status, newStatus);
-
-    // var result = await _UserCollection.UpdateOneAsync(filter, update);
-
-    // return result.ModifiedCount > 0;
-    //}
-
-    //user login check
 
     public async Task<IActionResult> Login(string email, string password)
     {
-        var user = await GetUserByEmail(email);
-
-        if (user != null && user.Status == 0 )
+        try
         {
-            var userPassword = EncodePasswordToBase64(password);
-            var storedPassword = DecodeFrom64(user.password);
-
-            if (userPassword != storedPassword)
+            var user = await GetUserByEmail(email);
+            if (user != null)
             {
-                var token = GenerateJSONWebToken(user);
-                return new ObjectResult(new { success = true, data = user, token = token, msg = "Success" }) { StatusCode = StatusCodes.Status401Unauthorized };
+                var userPassword = EncodePasswordToBase64(password);
+                var storedPassword = user.password;
+                if (userPassword == storedPassword)
+                {
+                    var token = GenerateJSONWebToken(user);
+                    return new ObjectResult(new { success = true, data = user, token = token, msg = "User login success!" });
+                }
             }
+            return new ObjectResult(new { success = false, msg = "Invalid username or password" });
         }
 
-        
-        
-        return new ObjectResult(new { success = false, data = user, token = "", msg = "Invalid username or password" });
+        catch (Exception ex)
+        {
+            return new ObjectResult(new { success = false, msg = "An error occurred while processing your request" });
+
+        }
     }
 
 
