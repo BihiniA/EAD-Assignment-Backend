@@ -105,11 +105,58 @@ public class UserService
         }
     }
 
-    public async Task UpdateUser(string id, Users user) // update user
+    public async Task UpdateUser(string id, UpdateUserDto user) // update user
     {
         try
         {
-            await _UserCollection.ReplaceOneAsync(x => x.nic == id, user);
+            var existingUser = await GetUser(id);
+            Users userObj = new Users(); 
+
+            if (user.Status != null)
+            {
+                userObj.Status = (EAD_Backend.Models.StatusEnum)user.Status;
+            }
+            else
+            {
+                userObj.Status = existingUser.Status;
+            }
+
+
+            if (user.email != null)
+            {
+                userObj.email = user.email;
+            }
+            else
+            {
+                userObj.email = existingUser.email;
+            }
+
+
+            if (user.name != null)
+            {
+                userObj.name = user.name;
+            }else
+            {
+                userObj.name = existingUser.name;
+            }
+
+            if (user.password != null)
+            {
+                userObj.password = EncodePasswordToBase64(user.password.ToString());
+            }else
+            {
+                userObj.password = DecodeFrom64(existingUser.password);
+            }
+
+            var filter = Builders<Users>.Filter.Eq(x => x.nic, id);
+
+            var update = Builders<Users>.Update.Set(x => x.Status, userObj.Status)
+                                               .Set(x => x.email, userObj.email)
+                                               .Set(x => x.name, userObj.name)
+                                               .Set(x => x.password, EncodePasswordToBase64(userObj.password));
+
+            await _UserCollection.UpdateOneAsync(filter, update);
+            //await _UserCollection.ReplaceOneAsync(x => x.nic == id, userObj);
             return;
         }
         catch (System.Exception)
@@ -178,6 +225,7 @@ public class UserService
             == id).FirstOrDefaultAsync();
             if (user != null)
             {
+                user.password = DecodeFrom64(user.password.ToString());
                 return user;
             }
             else
