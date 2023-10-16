@@ -12,6 +12,7 @@ using EAD_Backend.Dto;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Xml.Linq;
+using EAD_Backend.Services;
 
 public class ReservationService
 {
@@ -210,47 +211,4 @@ public class ReservationService
             throw;
         }
     }
-
-    //public async Task<List<Reservation>> SearchAsync(ReservationSearchModel searchModel)
-    //{
-    //    try
-    //    {
-    //        var filterBuilder = Builders<Reservation>.Filter;
-    //        var filter = filterBuilder.Empty; // Initialize an empty filter
-
-    //        if (!string.IsNullOrEmpty(searchModel.TrainScheduleid))
-    //        {
-    //            filter &= filterBuilder.Eq(r => r.TrainScheduleid, searchModel.TrainScheduleid);
-    //        }
-
-    //        if (!string.IsNullOrEmpty(searchModel.nic))
-    //        {
-    //            filter &= filterBuilder.Eq(r => r.nic, searchModel.nic);
-    //        }
-
-    //        if (searchModel.ReservationDate.HasValue)
-    //        {
-    //            filter &= filterBuilder.Eq(r => r.ReservationDate, searchModel.ReservationDate);
-    //        }
-
-    //        if (searchModel.ReserveCount.HasValue)
-    //        {
-    //            filter &= filterBuilder.Eq(r => r.ReserveCount, searchModel.ReserveCount);
-    //        }
-
-    //        if (searchModel.Status.HasValue)
-    //        {
-    //            filter &= filterBuilder.Eq(r => r.Status, searchModel.Status);
-    //        }
-
-    //        var reservations = await _reservationCollection.FindAsync(filter);
-    //        return await reservations.ToListAsync();
-    //    }
-    //    catch (Exception)
-    //    {
-    //        // Handle or log the exception here
-    //        throw;
-    //    }
-    //}
-
 }
