@@ -10,6 +10,7 @@ using EAD_Backend.Services;
 using System.Diagnostics;
 using MongoDB.Bson;
 using Microsoft.VisualBasic;
+using System.Diagnostics.Eventing.Reader;
 
 public class TrainService
 {
@@ -153,13 +154,30 @@ public class TrainService
 
             for (int i = 0; i < trainScheduleList.Count; i++)
             {
-               await _trainScheduleCollection.DeleteOneAsync(t => t._id == trainScheduleList[i]);
+                var trainScheduleId = trainScheduleList[i];
+                var existingTrainSchedule = await _trainScheduleCollection
+                    .Find(t => t._id == trainScheduleId)
+                    .FirstOrDefaultAsync();
+
+                if (existingTrainSchedule != null)
+                {
+                    await _trainScheduleCollection.DeleteOneAsync(t => t._id == trainScheduleId);
+                }
             }
 
             for (int i = 0; i < reservationsIdArrayCount; i++)
             {
-               await _reservationCollection.DeleteOneAsync(t => t._id == reservationsIdArray[i]);
+                var reservationId = reservationsIdArray[i];
+                var existingReservation = await _reservationCollection
+                    .Find(t => t._id == reservationId)
+                    .FirstOrDefaultAsync();
+
+                if (existingReservation != null)
+                {
+                    await _reservationCollection.DeleteOneAsync(t => t._id == reservationId);
+                }
             }
+
 
             var result = await _trainCollection.DeleteOneAsync(t => t._id == id);
             return result.DeletedCount > 0;

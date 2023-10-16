@@ -140,7 +140,7 @@ public class ReservationService
 
             DateTime thirtyDaysFromToday = DateTime.Today.AddDays(30);
 
-            if (parsedReservationDate <= thirtyDaysFromToday)
+            if (parsedReservationDate >= thirtyDaysFromToday)
             {
                 throw new InvalidOperationException("Reservation date must be at least 30 days from today");
             }
@@ -190,6 +190,42 @@ public class ReservationService
     {
         try
         {
+            var reservation = await GetByIdAsync(id);
+
+            if (updatedReservation.CreatedAt == null) {
+                updatedReservation.CreatedAt = reservation.CreatedAt;
+            }
+
+            if (updatedReservation.UpdatedAt == null)
+            {
+                updatedReservation.UpdatedAt = reservation.UpdatedAt;
+            }
+
+            if (updatedReservation.Status == null)
+            {
+                updatedReservation.Status = reservation.Status;
+            }
+
+            if (updatedReservation.TrainScheduleid == null)
+            {
+                updatedReservation.TrainScheduleid = reservation.TrainScheduleid;
+            }
+
+            if (updatedReservation.ReservationDate == null)
+            {
+                updatedReservation.ReservationDate = reservation.ReservationDate;
+            }
+
+            if (updatedReservation.ReserveCount == null)
+            {
+                updatedReservation.ReserveCount = reservation.ReserveCount;
+            }
+
+            if (updatedReservation.nic == null)
+            {
+                updatedReservation.nic = reservation.nic;
+            }
+
             var filter = Builders<Reservation>.Filter.Eq(r => r._id, id);
             var update = Builders<Reservation>.Update
                 .Set(r => r.TrainScheduleid, updatedReservation.TrainScheduleid)
