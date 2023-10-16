@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using MongoDBExample.Models;
 using Microsoft.AspNetCore;
 using EAD_Backend.JWTAuthentication;
+using EAD_Backend.Services;
 
 namespace EAD_Backend
 {
@@ -24,9 +25,9 @@ namespace EAD_Backend
         {
             services.Configure<MongoDBSettings>(Configuration.GetSection("MongoDB"));
             services.AddSingleton<UserService>();  // Register the UserService
-            services.AddSingleton<TrainService>(); // Register the TrainService
-            services.AddSingleton<TrainScheduleService>(); // Register the TrainScheduleService
-            services.AddSingleton<ReservationService>(); // Register the ReservationService
+            services.AddSingleton< TrainService>();
+            services.AddSingleton< TrainScheduleService>();
+            services.AddSingleton< ReservationService>();
             services.AddSingleton<TicketService>(); // Register the TicketService
             //services.AddSingleton<ITokenService, JwtAuthenticationService>();
 
@@ -49,7 +50,6 @@ namespace EAD_Backend
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -60,16 +60,10 @@ namespace EAD_Backend
             }
 
             app.UseHttpsRedirection();
-            //app.UseMiddleware<ValidateTokenMiddleware>();
 
             app.UseRouting();
             app.UseCors("CorsPolicy");
 
-            //app.Use(async (context, next) =>
-            //{
-            //    context.Response.Headers.Add("X-Developed-By", "Your Name");
-            //    await next.Invoke();
-            //});
 
             app.UseAuthorization();
 

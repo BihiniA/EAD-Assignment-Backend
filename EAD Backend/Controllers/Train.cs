@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using MongoDBExample.Models;
 using EAD_Backend.Models;
+using EAD_Backend.Services;
 
 namespace EAD_Backend.Controllers
 {
@@ -12,6 +13,7 @@ namespace EAD_Backend.Controllers
     public class TrainController : Controller
     {
         private readonly TrainService _trainService;
+
 
         public TrainController(TrainService trainService)
         {
@@ -76,15 +78,6 @@ namespace EAD_Backend.Controllers
                 return NotFound(new { success = false, msg = "Train not found" });
             }
 
-            // Check if user is authorized to perform this operation (e.g., based on user role)
-            // If not authorized, return a 403 Forbidden response
-            // Example authorization logic:
-            // if (!User.IsInRole("USER"))
-            // {
-            //     return Forbid();
-            // }
-
-            // Update the train properties that you want to allow users to modify
             existingTrain.Status = train.Status; // Update Status
             existingTrain.SeatCount = train.SeatCount; // Update SeatCount
 
