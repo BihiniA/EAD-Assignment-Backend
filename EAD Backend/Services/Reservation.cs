@@ -128,21 +128,33 @@ public class ReservationService
     {
         try
         {
-            if ( reservation.ReserveCount > 4) {
-                throw new InvalidOperationException("one user can only reserve 0-4 seats");
+            if (reservation.ReserveCount > 4)
+            {
+                throw new InvalidOperationException("One user can only reserve 0-4 seats");
+            }
+
+            if (!DateTime.TryParse(reservation.ReservationDate, out DateTime parsedReservationDate))
+            {
+                throw new InvalidOperationException("Invalid reservation date format");
+            }
+
+            DateTime thirtyDaysFromToday = DateTime.Today.AddDays(30);
+
+            if (parsedReservationDate <= thirtyDaysFromToday)
+            {
+                throw new InvalidOperationException("Reservation date must be at least 30 days from today");
             }
 
             Reservation res = new Reservation
             {
                 nic = reservation.nic,
-                ReservationDate = reservation.ReservationDate.ToString(),
+                ReservationDate = parsedReservationDate.ToString(), // Convert the date to string
                 CreatedAt = DateTime.Now.ToString(),
                 UpdatedAt = DateTime.UtcNow.ToString(),
                 Status = StatusEnum.ACTIVE,
                 ReserveCount = reservation.ReserveCount,
                 TrainScheduleid = reservation.TrainScheduleId
             };
-            
 
             string id = reservation.TrainScheduleId;
 
@@ -172,6 +184,7 @@ public class ReservationService
             throw;
         }
     }
+
 
     public async Task<Reservation> UpdateAsync(string id, Reservation updatedReservation)
     {
