@@ -51,7 +51,7 @@ public class UserService
                 password = pass,
                 name = user.name,
                 nic = user.nic,
-                Role = UserRole.User,
+                Role = user.Role,
                 Status = EAD_Backend.Models.StatusEnum.ACTIVE
             };
 

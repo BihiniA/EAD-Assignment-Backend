@@ -20,5 +20,8 @@ namespace EAD_Backend.Dto
 
         [JsonPropertyName("password")]
         public string password { get; set; } = null!;
+
+        [JsonPropertyName("role")]
+        public UserRole Role { get; set; }
     }
 }
