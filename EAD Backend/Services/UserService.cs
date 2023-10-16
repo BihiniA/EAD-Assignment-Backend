@@ -190,7 +190,7 @@ public class UserService
 
         catch (Exception ex)
         {
-            return new ObjectResult(new { success = false, msg = "An error occurred while processing your request" });
+            return new ObjectResult(new { success = false, data= ex, msg = "An error occurred while processing your request" });
 
         }
     }

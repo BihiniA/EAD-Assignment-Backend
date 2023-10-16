@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using MongoDBExample.Models;
 using EAD_Backend.Dto;
+using EAD_Backend.Services;
 
 namespace EAD_Backend.Controllers
 {
