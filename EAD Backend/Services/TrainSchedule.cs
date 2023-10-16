@@ -80,18 +80,46 @@ public class TrainScheduleService
         }
     }
 
-    public async Task UpdateTrainSchedule(string id, TrainSchedule updatedTrainSchedule)
+    public async Task UpdateTrainSchedule(string id, TrainScheduleUpdate updatedTrainSchedule)
     {
         try
         {
+            var trainSchedule = await GetByIdAsync(id);
+
+            if (updatedTrainSchedule.EndTime == null)
+            {
+                trainSchedule.EndTime = updatedTrainSchedule.EndTime;
+            }
+
+            if (updatedTrainSchedule.Destination == null)
+            {
+                trainSchedule.Destination = updatedTrainSchedule.Destination;
+            }
+
+            if (updatedTrainSchedule.ScheduleDate == null)
+            {
+                trainSchedule.ScheduleDate = updatedTrainSchedule.ScheduleDate;
+            }
+
+            if (updatedTrainSchedule.Departure == null)
+            {
+                trainSchedule.Departure = updatedTrainSchedule.Departure;
+            }
+
+            if (updatedTrainSchedule.AvailableSeatCount == null)
+            {
+                trainSchedule.AvailableSeatCount = updatedTrainSchedule.AvailableSeatCount;
+            }
+
+
             var filter = Builders<TrainSchedule>.Filter.Eq(t => t._id, id);
             var update = Builders<TrainSchedule>.Update
-                .Set(t => t.TrainId, updatedTrainSchedule.TrainId)
+                .Set(t => t.TrainId, trainSchedule.TrainId)
                 .Set(t => t.Departure, updatedTrainSchedule.Departure)
                 .Set(t => t.Destination, updatedTrainSchedule.Destination)
                 .Set(t => t.StartTime, updatedTrainSchedule.StartTime)
                 .Set(t => t.EndTime, updatedTrainSchedule.EndTime)
-                .Set(t => t.Status, updatedTrainSchedule.Status);
+                .Set(t => t.Status, trainSchedule.Status);
 
             await _trainScheduleCollection.UpdateOneAsync(filter, update);
         }

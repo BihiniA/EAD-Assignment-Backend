@@ -48,7 +48,7 @@ namespace EAD_Backend.Controllers
         }
 
         [HttpPatch("update/{id}")] // Update a train schedule
-        public async Task<IActionResult> Update(string id, [FromBody] TrainSchedule trainSchedule)
+        public async Task<IActionResult> Update(string id, [FromBody] TrainScheduleUpdate trainSchedule)
         {
             var existingTrainSchedule = await _trainScheduleService.GetByIdAsync(id);
 
